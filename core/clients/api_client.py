@@ -36,14 +36,14 @@ class APIClient:
 
     def get(self, endpoint, params=None, status_code=200):
         url = self.base_url + endpoint
-        response = requests.get(url, params=params, headers=self.headers)
+        response = requests.get(url, params=params, headers=self.session.headers)
         if status_code:
             assert response.status_code == status_code
         return response.json()
 
     def post(self, endpoint, data_json=None, status_code=200):
         url = self.base_url + endpoint
-        response = requests.post(url, headers=self.headers, json=data_json)
+        response = requests.post(url, headers=self.session.headers, json=data_json)
         if status_code:
             assert response.status_code == status_code
         return response.json()
