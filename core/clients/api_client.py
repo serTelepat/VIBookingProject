@@ -3,9 +3,7 @@ import os
 import allure
 
 from dotenv import load_dotenv
-from pygments.lexers import q
 from requests.auth import HTTPBasicAuth
-from urllib3.contrib.emscripten import response
 
 from core.settings.config import Users, Timeouts
 from core.settings.environments import Environment
