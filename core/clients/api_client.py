@@ -1,6 +1,7 @@
 import requests
 import os
 import allure
+import json
 
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
@@ -106,7 +107,8 @@ class APIClient:
     def create_booking(self, data_json):
         with allure.step("Creating booking"):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}"
-            response = self.session.post(url=url, json=data_json)
+            self.session.headers["Accept"] = "application/json"
+            response = self.session.post(url=url, json=data_json, headers=self.session.headers)
             response.raise_for_status()
 
         with allure.step("Checking status code"):
@@ -116,9 +118,11 @@ class APIClient:
     def update_booking(self, id: int, data_json):
         with allure.step("Updating booking by ID"):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}/{id}"
+            self.session.headers["Accept"] = "application/json"
             response = self.session.put(url=url,
                                         json=data_json,
-                                        auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value))
+                                        auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value),
+                                        headers=self.session.headers)
 
             response.raise_for_status()
 
@@ -129,9 +133,11 @@ class APIClient:
     def partial_update_booking(self, id: int, data_json):
         with allure.step("Partial updating booking by ID"):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}/{id}"
+            self.session.headers["Accept"] = "application/json"
             response = self.session.patch(url=url,
                                           json=data_json,
-                                          auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value))
+                                          auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value),
+                                          headers=self.session.headers)
 
             response.raise_for_status()
 
