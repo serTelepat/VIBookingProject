@@ -7,6 +7,7 @@ from schemas.booking_schema import BOOKING_SCHEMA
 
 
 # Не уверен, что код правильный, хотелось бы понять когда использовать Exception, а когда AssertionError при патче в мокировании
+# Нейронка говорит, что .raise_for_status() отлавливает ошибки 4XX - 5XX
 @allure.feature("Test create booking")
 @allure.story("Test booking successfully")
 def test_create_booking(api_client, generate_random_booking_data):
