@@ -1,7 +1,6 @@
 import requests
 import os
 import allure
-import json
 
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
