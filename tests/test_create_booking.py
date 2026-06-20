@@ -1,6 +1,5 @@
 import allure
 import pytest
-import requests
 import jsonschema
 
 from schemas.booking_schema import BOOKING_SCHEMA
@@ -35,68 +34,27 @@ def test_create_booking(api_client, generate_random_booking_data):
 
 
 @allure.feature("Test create booking")
-@allure.story("Test server unavailability")
-def test_create_booking_server_unavailability(api_client, generate_random_booking_data, mocker):
-    mocker.patch.object(api_client.session, "post", side_effect=Exception("Server unavailable"))
-    with pytest.raises(Exception, match="Server unavailable"):
-        api_client.create_booking(generate_random_booking_data)
+@allure.story("Test creating the empty booking")
+def test_create_empty_booking(api_client, generate_random_booking_data):
+    with pytest.raises(Exception, match="Internal Server Error"):
+        response = api_client.create_booking(dict())
+        assert response.status_code == 500, f"Expected status code is 500, but got {response.status_code}"
 
 
 @allure.feature("Test create booking")
-@allure.story("Test server error")
-def test_create_booking_server_error(api_client, generate_random_booking_data, mocker):
-    mock_response = mocker.Mock()
-    mock_response.status_code = 500
-    mocker.patch.object(api_client.session, "post",
-                        side_effect=Exception("Expected status code is 200, but got 500"),
-                        return_value=mock_response)
-
-    with pytest.raises(Exception, match="Expected status code is 200, but got 500"):
-        api_client.create_booking(generate_random_booking_data)
+@allure.story("Test required field is missing")
+def test_missed_required_field(api_client, generate_random_booking_data):
+    with pytest.raises(Exception, match="Bad Request"):
+        response = api_client.create_booking(generate_random_booking_data.pop("firstname"))
+        assert response.status_code == 400, f"Expected status code is 400, but got {response.status_code}"
 
 
 @allure.feature("Test create booking")
-@allure.story("Test missing header")
-def test_create_booking_missing_header(api_client, generate_random_booking_data, mocker):
-    mock_response = mocker.Mock()
-    mock_response.status_code = 418
-    mocker.patch.object(api_client.session, "post",
-                        side_effect=Exception("I'm a Teapot"),
-                        return_value=mock_response)
-
-    with pytest.raises(Exception, match="I'm a Teapot"):
-        api_client.create_booking(generate_random_booking_data)
+@allure.story("Test wrong header value")
+def test_wrong_header_value(api_client, generate_random_booking_data):
+    api_client.session.headers.update({"Content-Type": "text/xml"})
+    with pytest.raises(Exception, match="Bad Request"):
+        response = api_client.create_booking(generate_random_booking_data)
+        assert response.status_code == 400, f"Expected status code is 400, but got {response.status_code}"
 
 
-@allure.feature("Test create booking")
-@allure.story("Test wrong URL")
-def test_create_booking_not_found(api_client, generate_random_booking_data, mocker):
-    mock_response = mocker.Mock()
-    mock_response.status_code = 404
-    mocker.patch.object(api_client.session, "post",
-                        side_effect=Exception("Expected status code is 200, but got 404"),
-                        return_value=mock_response)
-
-    with pytest.raises(Exception, match="Expected status code is 200, but got 404"):
-        api_client.create_booking(generate_random_booking_data)
-
-
-@allure.feature("Test create booking")
-@allure.story("Test forbidden")
-def test_create_booking_forbidden(api_client, generate_random_booking_data, mocker):
-    mock_response = mocker.Mock()
-    mock_response.status_code = 403
-    mocker.patch.object(api_client.session, "post",
-                        side_effect=Exception("Expected status code is 200, but got 403"),
-                        return_value=mock_response)
-
-    with pytest.raises(Exception, match="Expected status code is 200, but got 403"):
-        api_client.create_booking(generate_random_booking_data)
-
-
-@allure.feature("Test create booking")
-@allure.story("Test timeout")
-def test_create_booking_not_found(api_client, generate_random_booking_data, mocker):
-    mocker.patch.object(api_client.session, "post", side_effect=requests.Timeout)
-    with pytest.raises(requests.Timeout):
-        api_client.create_booking(generate_random_booking_data)

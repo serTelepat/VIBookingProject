@@ -23,7 +23,6 @@ def test_server_unavailability(api_client, mocker):
 def test_wrong_http_method(api_client, mocker):
     mock_response = mocker.Mock()
     mock_response.status_code = 405
-    # Не понимаю почему, тут используется AssertionError вместо Exception
     mocker.patch.object(api_client.session, "get", return_value=mock_response)
     with pytest.raises(AssertionError, match="Expected status code is 201, but got 405"):
         api_client.ping()
@@ -34,7 +33,6 @@ def test_wrong_http_method(api_client, mocker):
 def test_ping_internal_server_error(api_client, mocker):
     mock_response = mocker.Mock()
     mock_response.status_code = 500
-    # И здесь не понимаю, почему тут используется AssertionError вместо Exception
     mocker.patch.object(api_client.session, "get", return_value=mock_response)
     with pytest.raises(AssertionError, match="Expected status code is 201, but got 500"):
         api_client.ping()
@@ -45,7 +43,6 @@ def test_ping_internal_server_error(api_client, mocker):
 def test_ping_not_found(api_client, mocker):
     mock_response = mocker.Mock()
     mock_response.status_code = 404
-    # Здесь тоже не понимаю почему тут используется AssertionError
     mocker.patch.object(api_client.session, "get", return_value=mock_response)
     with pytest.raises(AssertionError, match="Expected status code is 201, but got 404"):
         api_client.ping()

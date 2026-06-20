@@ -107,7 +107,7 @@ class APIClient:
     def create_booking(self, data_json):
         with allure.step("Creating booking"):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}"
-            self.session.headers["Accept"] = "application/json"
+            self.session.headers.update({"Accept": "application/json"})
             response = self.session.post(url=url, json=data_json, headers=self.session.headers)
             response.raise_for_status()
 
