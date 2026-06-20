@@ -108,7 +108,7 @@ class APIClient:
         with allure.step("Creating booking"):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}"
             self.session.headers.update({"Accept": "application/json"})
-            response = self.session.post(url=url, json=data_json, headers=self.session.headers)
+            response = self.session.post(url=url, json=data_json)
             response.raise_for_status()
 
         with allure.step("Checking status code"):
@@ -118,11 +118,10 @@ class APIClient:
     def update_booking(self, id: int, data_json):
         with allure.step("Updating booking by ID"):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}/{id}"
-            self.session.headers["Accept"] = "application/json"
+            self.session.headers.update({"Accept": "application/json"})
             response = self.session.put(url=url,
                                         json=data_json,
-                                        auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value),
-                                        headers=self.session.headers)
+                                        auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value))
 
             response.raise_for_status()
 
@@ -133,11 +132,10 @@ class APIClient:
     def partial_update_booking(self, id: int, data_json):
         with allure.step("Partial updating booking by ID"):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}/{id}"
-            self.session.headers["Accept"] = "application/json"
+            self.session.headers.update({"Accept": "application/json"})
             response = self.session.patch(url=url,
                                           json=data_json,
-                                          auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value),
-                                          headers=self.session.headers)
+                                          auth=HTTPBasicAuth(Users.USERNAME.value, Users.PASSWORD.value))
 
             response.raise_for_status()
 
