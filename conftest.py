@@ -71,6 +71,7 @@ def generate_booking_data_with_wrong_dates(generate_random_booking_data: dict, d
 
 
 @pytest.fixture(scope="function")
-def set_default_content_type_header(api_client):
+def changing_and_reverting_content_type_header(api_client):
+    api_client.session.headers["Content-Type"] = "text/xml"
     yield
     api_client.session.headers["Content-Type"] = "application/json"

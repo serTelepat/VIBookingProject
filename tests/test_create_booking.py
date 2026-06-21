@@ -91,8 +91,7 @@ def test_missed_required_field(api_client, generate_random_booking_data):
 
 @allure.feature("Test create booking")
 @allure.story("Negative test: wrong header value")
-def test_wrong_header_value(api_client, generate_random_booking_data, set_default_content_type_header):
-    api_client.session.headers.update({"Content-Type": "text/xml"})
+def test_wrong_header_value(api_client, generate_random_booking_data, changing_and_reverting_content_type_header):
     with pytest.raises(Exception, match="Bad Request"):
         response = api_client.create_booking(generate_random_booking_data)
         assert response.status_code == 400, f"Expected status code is 400, but got {response.status_code}"
