@@ -1,5 +1,4 @@
 import pytest
-import json
 
 from datetime import datetime, timedelta
 from faker import Faker
@@ -27,7 +26,7 @@ def booking_dates():
 
 
 @pytest.fixture(scope="function")
-def generate_random_booking_data(booking_dates):
+def generate_random_booking_data(booking_dates: dict):
     faker = Faker()
     firstname = faker.first_name()
     lastname = faker.last_name()
@@ -45,3 +44,34 @@ def generate_random_booking_data(booking_dates):
     }
 
     return data
+
+
+@pytest.fixture(scope="function")
+def reverse_booking_dates(booking_dates):
+    booking_dates["checkin"], booking_dates["checkout"] = booking_dates["checkout"], booking_dates["checkin"]
+    return booking_dates
+
+
+@pytest.fixture(scope="function")
+def generate_booking_data_with_reverse_dates(generate_random_booking_data: dict, reverse_booking_dates: dict):
+    generate_random_booking_data.update({"bookingdates":  reverse_booking_dates})
+    return generate_random_booking_data
+
+
+@pytest.fixture(scope="function")
+def delete_checkout_date(booking_dates: dict):
+    booking_dates.pop("checkout")
+    return booking_dates
+
+
+@pytest.fixture(scope="function")
+def generate_booking_data_with_wrong_dates(generate_random_booking_data: dict, delete_checkout_date: dict):
+    generate_random_booking_data.update({"bookingdates":  delete_checkout_date})
+    return generate_random_booking_data
+
+
+@pytest.fixture(scope="function")
+def changing_and_reverting_content_type_header(api_client):
+    api_client.session.headers["Content-Type"] = "text/xml"
+    yield
+    api_client.session.headers["Content-Type"] = "application/json"
