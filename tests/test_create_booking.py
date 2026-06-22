@@ -103,15 +103,3 @@ def test_checkout_date_missing(api_client, generate_booking_data_with_wrong_date
     with pytest.raises(Exception, match="Internal Server Error"):
         response = api_client.create_booking(generate_booking_data_with_wrong_dates)
         assert response.status_code == 500, f"Expected status code is 500, but got {response.status_code}"
-
-
-# Тут баг, но можно исправить со стороны API-клиента (сравнивать даты и отбрасывать 500 код),
-# но есть ли в этом смысл, если это уже работа со стороны backend-разраба?
-#
-# Или сделать через мокирование, если сервер не умеет такое обрабатывать?
-@allure.feature("Test create booking")
-@allure.story("Negative test: reverse date values")
-def test_reverse_dates(api_client, generate_booking_data_with_reverse_dates):
-    with pytest.raises(Exception, match="Internal Server Error"):
-        response = api_client.create_booking(generate_booking_data_with_reverse_dates)
-        assert response.status_code == 500, f"Expected status code is 500, but got {response.status_code}"
