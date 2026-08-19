@@ -103,3 +103,4 @@ def test_checkout_date_missing(api_client, generate_booking_data_with_wrong_date
     with pytest.raises(Exception, match="Internal Server Error"):
         response = api_client.create_booking(generate_booking_data_with_wrong_dates)
         assert response.status_code == 500, f"Expected status code is 500, but got {response.status_code}"
+
